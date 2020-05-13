@@ -1,34 +1,39 @@
 ﻿using Akka.Actor;
 using MovieStreamingActorSystem.Messages;
 using System;
+using System.Collections.Generic;
+using System.Text;
 
 namespace MovieStreamingActorSystem.Actors
 {
     public class UserActor : ReceiveActor
     {
         // Add State
+        private readonly int _userId;
         private string _currentlyWatching;
 
-        public UserActor()
+        public UserActor(int userId)
         {
-            Console.WriteLine("Creating a UserActor");
+            _userId = userId;
 
-            Receive<PlayMovieMessage>(m => HandlePlayMovieMessage(m));
-            Receive<StopMovieMessage>(m => HandleStopMovieMessage());
-
+            // Initial Behaviour
+            Stopped();
         }
 
-        private void HandlePlayMovieMessage(PlayMovieMessage message)
+        private void Playing()
         {
-            if(_currentlyWatching != null)
-            {
-                // Currently watching a movie
-                ColourConsole.WriteRedLine("ERROR: Cannot start playing another movie before stopping existing one!");
-            }
-            else
-            {
-                StartPlayingMovie(message.MovieTitle);
-            }
+            Receive<PlayMovieMessage>(message => ColourConsole.WriteRedLine("ERROR: Cannot start playing another movie before stopping the existing one!"));
+            Receive<StopMovieMessage>(message => StopPlayingCurrentMovie());
+
+            ColourConsole.WriteCyanLine("UserActor has now become Playing");
+        }
+
+        private void Stopped()
+        {
+            Receive<PlayMovieMessage>(message => StartPlayingMovie(message.MovieTitle));
+            Receive<StopMovieMessage>(message => ColourConsole.WriteRedLine("ERROR: cannot stop if nothing is playing"));
+
+            ColourConsole.WriteCyanLine("UserActor has now become stopped");
         }
 
         private void StartPlayingMovie(string title)
@@ -36,25 +41,19 @@ namespace MovieStreamingActorSystem.Actors
             _currentlyWatching = title;
 
             ColourConsole.WriteYellowLine($"User is currently watching {_currentlyWatching}");
+
+            Context.ActorSelection("/user/Playback/PlaybackStatistics/MoviePlayCounter").Tell(new IncrementPlayCountMessage(title));
+
+
+            // Set the current state of the actor to playing
+            Become(Playing);
         }
 
-        private void HandleStopMovieMessage()
-        {
-            if(_currentlyWatching == null)
-            {
-                // can't stop watching a movie if one isn't being watched!
-                ColourConsole.WriteRedLine("ERROR: Can't stop playing if nothing is playing!");
-            }
-            else
-            {
-                StopCurrentMovie();
-            }
-        }
-
-        private void StopCurrentMovie()
+        private void StopPlayingCurrentMovie()
         {
             ColourConsole.WriteYellowLine($"Stopping movie {_currentlyWatching}");
             _currentlyWatching = null;
+            Become(Stopped);
         }
 
 
