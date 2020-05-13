@@ -38,8 +38,88 @@ namespace MovieStreamingActorSystem
 
             playbackActorThatInheritsReceiveActorAndHandlesMessagesRef.Tell(message);
 
+            // Some additional messages
+            var partialRecall = new PlayMovieMessage("Partial Recall", 99);
+            var booleanLies = new PlayMovieMessage("Boolean Lies", 77);
+            var codenanTheDestroyer = new PlayMovieMessage("Codenan the Destroyer", 1);
+
+            // Actor with overridden life cycle methods
+
+            var playbackActorThatInheritsReceiveActorAndHandlesMessagesWithOverriddenLifeCycleMethodsProps = Props.Create<PlaybackActorThatInheritsReceiveActorAndHandlesMessagesWithOverriddenLifeCycleMethods>();
+            var playbackActorThatInheritsReceiveActorAndHandlesMessagesWithOverriddenLifeCycleMethodsRef = MovieStreamingActorSystem.ActorOf(playbackActorThatInheritsReceiveActorAndHandlesMessagesWithOverriddenLifeCycleMethodsProps, "playbackActorThatInheritsReceiveActorAndHandlesMessagesWithOverriddenLifeCycleMethodsProps");
+
+            playbackActorThatInheritsReceiveActorAndHandlesMessagesWithOverriddenLifeCycleMethodsRef.Tell(message);
+            playbackActorThatInheritsReceiveActorAndHandlesMessagesWithOverriddenLifeCycleMethodsRef.Tell(partialRecall);
+            playbackActorThatInheritsReceiveActorAndHandlesMessagesWithOverriddenLifeCycleMethodsRef.Tell(booleanLies);
+            playbackActorThatInheritsReceiveActorAndHandlesMessagesWithOverriddenLifeCycleMethodsRef.Tell(codenanTheDestroyer);
+
+            playbackActorThatInheritsReceiveActorAndHandlesMessagesWithOverriddenLifeCycleMethodsRef.Tell(PoisonPill.Instance);
+
+            // Behaviours
+
+            // Switching to a new explicitly specified behaviour
+            //   - Use Become() method
+            //     Existing configured behaviour not remembered
+
+            //   - Use Behaviour Stack (contains 2 methods)
+            //   - BecomeStacked() - Switches to new behaviour and pushes existing behaviour down the behaviour stack
+            //   - UnbecomeStacked() - pops the current behaviour off the stack and the previously pushed behaviour is restored
+
+            var userActorProps = Props.Create<UserActor>();
+            var userActorRef = MovieStreamingActorSystem.ActorOf(userActorProps, "userActor");
+            
+            Console.ReadKey();
+            Console.WriteLine("Sending a PlayMovie Message for Codenan the Destroyer");
+            userActorRef.Tell(codenanTheDestroyer);
+
+            Console.ReadKey();
+            Console.WriteLine("Sending a PlayMovie Message for BooleanLies");
+            userActorRef.Tell(booleanLies);
+
+            Console.ReadKey();
+            Console.WriteLine("Sending a StopMovie Message");
+            userActorRef.Tell(new StopMovieMessage());
+
+            Console.ReadKey();
+            Console.WriteLine("Sending a StopMovie Message");
+            userActorRef.Tell(new StopMovieMessage());
+
+            // Behaviour:  Refactored to switchable behaviours
+            Console.WriteLine();
+            Console.WriteLine("Refactorted UserActor to Switchable Behaviours");
+            Console.WriteLine();
+            var userActorRefactoredToSwitchableBehavioursProps = Props.Create<UserActorRefactoredToSwitchableBehavioursRefactoredToSwitchableBehaviours>();
+            var userActorRefactoredToSwitchableBehavioursRef = MovieStreamingActorSystem.ActorOf(userActorRefactoredToSwitchableBehavioursProps, "userActorRefactoredToSwitchableBehaviours");
+
+            Console.ReadKey();
+            Console.WriteLine("Sending a PlayMovie Message for Codenan the Destroyer");
+            userActorRefactoredToSwitchableBehavioursRef.Tell(codenanTheDestroyer);
+
+            Console.ReadKey();
+            Console.WriteLine("Sending a PlayMovie Message for BooleanLies");
+            userActorRefactoredToSwitchableBehavioursRef.Tell(booleanLies);
+
+            Console.ReadKey();
+            Console.WriteLine("Sending a StopMovie Message");
+            userActorRefactoredToSwitchableBehavioursRef.Tell(new StopMovieMessage());
+
+            Console.ReadKey();
+            Console.WriteLine("Sending a StopMovie Message");
+            userActorRefactoredToSwitchableBehavioursRef.Tell(new StopMovieMessage());
+
+
             Console.ReadLine();
+
+            // Tell the actor system and all child actors to shutdown
             MovieStreamingActorSystem.Terminate();
+
+            // Wait for actor system to finish shutting down
+            _ = MovieStreamingActorSystem.WhenTerminated;
+
+            Console.WriteLine("Actor system has shut down");
+
+            Console.ReadLine();
+
         }
     }
 }
