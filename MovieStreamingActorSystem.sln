@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30104.148
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MovieStreamingActorSystem", "MovieStreamingActorSystem\MovieStreamingActorSystem.csproj", "{486FFFD3-5AB3-4083-8173-DEEE48661B8D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MovieStreaming", "MovieStreaming\MovieStreaming.csproj", "{796F7855-A909-4CA6-8A6F-F488C3F7E77B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -11,10 +11,10 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{486FFFD3-5AB3-4083-8173-DEEE48661B8D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{486FFFD3-5AB3-4083-8173-DEEE48661B8D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{486FFFD3-5AB3-4083-8173-DEEE48661B8D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{486FFFD3-5AB3-4083-8173-DEEE48661B8D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{796F7855-A909-4CA6-8A6F-F488C3F7E77B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{796F7855-A909-4CA6-8A6F-F488C3F7E77B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{796F7855-A909-4CA6-8A6F-F488C3F7E77B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{796F7855-A909-4CA6-8A6F-F488C3F7E77B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
