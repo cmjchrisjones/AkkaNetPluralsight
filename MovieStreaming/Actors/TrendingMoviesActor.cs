@@ -1,4 +1,5 @@
 ﻿using Akka.Actor;
+using Akka.Event;
 using MovieStreaming.Messages;
 using System;
 using System.Collections.Generic;
@@ -7,6 +8,8 @@ namespace MovieStreaming.Actors
 {
     public class TrendingMoviesActor : ReceiveActor
     {
+        private readonly ILoggingAdapter _logger = Context.GetLogger();
+
         private readonly ITrendingMovieAnalyzer _trendAnalyzer;
 
         private readonly Queue<string> _recentlyPlayedMovies;
@@ -25,6 +28,28 @@ namespace MovieStreaming.Actors
         private void HandleIncrementMessage(IncrementPlayCountMessage message)
         {
             var recentlyPlayedMoviesBufferIsFull = _recentlyPlayedMovies.Count == NumberOfRecentMoviesToAnalyze;
+        }
+
+        protected override void PreStart()
+        {
+            _logger.Debug("TrendingMovies Actor PreStart");
+        }
+
+        protected override void PostStop()
+        {
+            _logger.Debug("TrendingMovies Actor PostStop");
+        }
+
+        protected override void PreRestart(Exception reason, object message)
+        {
+            _logger.Debug($"TrendingMovies PreRestart because {reason}.");
+            base.PreRestart(reason, message);
+        }
+
+        protected override void PostRestart(Exception reason)
+        {
+            _logger.Debug($"TrendingMovies PostRestart because {reason}.");
+            base.PostRestart(reason);
         }
     }
 }

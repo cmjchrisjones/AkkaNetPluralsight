@@ -2,6 +2,7 @@
 using Akka.Configuration;
 using MovieStreaming.Actors;
 using MovieStreaming.Messages;
+using Serilog;
 using System;
 using System.IO;
 using System.Linq;
@@ -16,6 +17,10 @@ namespace MovieStreaming
 
         static void Main(string[] args)
         {
+            var logger = new LoggerConfiguration().WriteTo.Seq("http://localhost:32769").MinimumLevel.Information().CreateLogger();
+
+            Serilog.Log.Logger = logger;
+
             // Solution to read hocon from StackOverflow: https://stackoverflow.com/a/56459986/1798229
             var hocon = XElement.Parse(File.ReadAllText(Directory.GetCurrentDirectory() + "\\hocon.conf"));
             var config = ConfigurationFactory.ParseString(hocon.Descendants("hocon").Single().Value);

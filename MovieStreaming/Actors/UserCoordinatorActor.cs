@@ -1,4 +1,5 @@
 ﻿using Akka.Actor;
+using Akka.Event;
 using MovieStreaming.Messages;
 using System;
 using System.Collections.Generic;
@@ -9,6 +10,7 @@ namespace MovieStreaming.Actors
     public class UserCoordinatorActor : ReceiveActor
     {
         private readonly Dictionary<int, IActorRef> _users;
+        private readonly ILoggingAdapter _logger = Context.GetLogger();
 
         public UserCoordinatorActor()
         {
@@ -36,29 +38,29 @@ namespace MovieStreaming.Actors
                 IActorRef newChildActorRef = Context.ActorOf(Props.Create(() => new UserActor(userId)), "User" + userId);
                 _users.Add(userId, newChildActorRef);
 
-                ColourConsole.WriteCyanLine($"UserCoordinatorActor create a new child UserActor for {userId} (Total users: {_users.Count})");
+                _logger.Info($"UserCoordinatorActor create a new child UserActor for {userId} (Total users: {_users.Count})");
             }
         }
 
         protected override void PreStart()
         {
-            ColourConsole.WriteCyanLine("UserCoordinatorActor Actor PreStart");
+            _logger.Debug("UserCoordinator Actor PreStart");
         }
 
         protected override void PostStop()
         {
-            ColourConsole.WriteCyanLine("UserCoordinatorActor Actor PostStop");
+            _logger.Debug("UserCoordinator Actor PostStop");
         }
 
         protected override void PreRestart(Exception reason, object message)
         {
-            ColourConsole.WriteCyanLine($"UserCoordinatorActor Prerestart because {reason}.");
+            _logger.Debug($"UserCoordinator Actor PreRestart because {reason}.");
             base.PreRestart(reason, message);
         }
 
         protected override void PostRestart(Exception reason)
         {
-            ColourConsole.WriteCyanLine($"UserCoordinatorActor Postrestart because {reason}.");
+            _logger.Debug($"UserCoordinator Actor PostRestart because {reason}.");
             base.PostRestart(reason);
         }
     }

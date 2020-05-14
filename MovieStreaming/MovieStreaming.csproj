@@ -11,14 +11,12 @@
 
   <ItemGroup>
     <PackageReference Include="akka" Version="1.4.6" />
-    <PackageReference Include="akka.logger.nlog" Version="1.4.5" />
+    <PackageReference Include="akka.logger.serilog" Version="1.4.3" />
+    <PackageReference Include="serilog.sinks.seq" Version="4.0.0" />
   </ItemGroup>
 
   <ItemGroup>
     <None Update="hocon.conf">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="NLog.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>

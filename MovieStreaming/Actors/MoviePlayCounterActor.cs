@@ -1,4 +1,5 @@
 ﻿using Akka.Actor;
+using Akka.Event;
 using MovieStreaming.Exceptions;
 using MovieStreaming.Messages;
 using System;
@@ -9,6 +10,8 @@ namespace MovieStreaming.Actors
     public class MoviePlayCounterActor : ReceiveActor
     {
         private readonly Dictionary<string, int> _moviePlayCounts;
+        private readonly ILoggingAdapter _logger = Context.GetLogger();
+
 
         public MoviePlayCounterActor()
         {
@@ -38,10 +41,8 @@ namespace MovieStreaming.Actors
             {
                 throw new InvalidOperationException("Simulated Exception");
             }
-
-            // TODO: log MoviePlayCounterActor message.MovieTitle has been watched _moviePlayCounts[message.MovieTitle]
-
-            ColourConsole.WriteMagentaLine($"MoviePlayCounterActor {message.MovieTitle} has been watched {_moviePlayCounts[message.MovieTitle]} times");
+             
+            _logger.Info($"MoviePlayCounterActor {message.MovieTitle} has been watched {_moviePlayCounts[message.MovieTitle]} times");
         }
     }
 }

@@ -10,6 +10,7 @@ namespace MovieStreaming.Actors
     public class PlaybackStatisticsActor : ReceiveActor
     {
         private readonly ILoggingAdapter _logger = Context.GetLogger();
+
         public PlaybackStatisticsActor()
         {
             Context.ActorOf(Props.Create<MoviePlayCounterActor>(), "MoviePlayCounter");
@@ -20,6 +21,7 @@ namespace MovieStreaming.Actors
         {
             return new OneForOneStrategy(exception =>
             {
+                
                 if (exception is ActorInitializationException)
                 {
                     // TODO: log PlaybackStatisticsActor supervisor strategy stopped
@@ -43,23 +45,23 @@ namespace MovieStreaming.Actors
 
         protected override void PreStart()
         {
-           _logger.Debug("PlaybackStatisticsActor Actor PreStart");
+           _logger.Debug("PlaybackStatistics Actor PreStart");
         }
 
         protected override void PostStop()
         {
-            _logger.Debug("PlaybackStatisticsActor Actor PostStop");
+            _logger.Debug("PlaybackStatistics Actor PostStop");
         }
 
         protected override void PreRestart(Exception reason, object message)
         {
-            _logger.Debug($"PlaybackStatisticsActor Prerestart because {reason}.");
+            _logger.Debug($"PlaybackStatistics Actor PreRestart because {reason}.");
             base.PreRestart(reason, message);
         }
 
         protected override void PostRestart(Exception reason)
         {
-            _logger.Debug($"PlaybackStatisticsActor Postrestart because {reason}.");
+            _logger.Debug($"PlaybackStatistics Actor PostRestart because {reason}.");
             base.PostRestart(reason);
         }
     }
