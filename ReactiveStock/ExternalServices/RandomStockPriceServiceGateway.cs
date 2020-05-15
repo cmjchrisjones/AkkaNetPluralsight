@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace ReactiveStock.ActorModel.ExternalServices
+namespace ReactiveStock.ExternalServices
 {
     class RandomStockPriceServiceGateway : IStockPriceServiceGateway
     {

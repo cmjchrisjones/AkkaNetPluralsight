@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace ReactiveStock.ActorModel.ExternalServices
+namespace ReactiveStock.ExternalServices
 {
     interface IStockPriceServiceGateway
     {

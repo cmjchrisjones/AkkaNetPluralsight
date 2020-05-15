@@ -1,6 +1,6 @@
 ﻿using Akka.Actor;
-using ReactiveStock.ActorModel.ExternalServices;
 using ReactiveStock.ActorModel.Messages;
+using ReactiveStock.ExternalServices;
 using System;
 
 namespace ReactiveStock.ActorModel.Actors

@@ -3,7 +3,7 @@ using Akka.DI.Core;
 using Akka.DI.Ninject;
 using Ninject;
 using ReactiveStock.ActorModel.Actors;
-using ReactiveStock.ActorModel.ExternalServices;
+using ReactiveStock.ExternalServices;
 using System;
 
 namespace ReactiveStock.ActorModel
