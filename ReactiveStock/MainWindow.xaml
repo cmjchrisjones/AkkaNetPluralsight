@@ -12,6 +12,12 @@
                 <RowDefinition Height="700" />
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
+            
+            <!-- Line chart here -->
+
+            <StackPanel Grid.Row="1" Orientation="Horizontal">
+                <!-- Stock toggle buttons here -->
+            </StackPanel>
         </Grid>
     </Grid>
 </Window>
