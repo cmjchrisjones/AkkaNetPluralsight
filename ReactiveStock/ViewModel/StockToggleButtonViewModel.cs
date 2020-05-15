@@ -52,13 +52,13 @@ namespace ReactiveStock.ViewModel
             UpdateButtonTextToOff();
         }
 
-        void UpdateButtonTextToOff()
+        public void UpdateButtonTextToOff()
         {
             ButtonText = ConstructButtonText(false);
         }
 
 
-        void UpdateButtonTextToOn()
+        public void UpdateButtonTextToOn()
         {
             ButtonText = ConstructButtonText(true);
         }
