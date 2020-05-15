@@ -6,8 +6,8 @@ namespace ReactiveStock.ActorModel.Messages
 {
     class StockPriceMessage
     {
-        private string StockSymbol;
-        private decimal StockPrice;
+        public string StockSymbol;
+        public decimal StockPrice;
         public DateTime Date;
 
         public StockPriceMessage(string stockSymbol, decimal stockPrice, DateTime date)
