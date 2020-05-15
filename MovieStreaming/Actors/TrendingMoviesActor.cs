@@ -15,12 +15,15 @@ namespace MovieStreaming.Actors
         private readonly Queue<string> _recentlyPlayedMovies;
         private const int NumberOfRecentMoviesToAnalyze = 5;
 
-        public TrendingMoviesActor()
+        public TrendingMoviesActor(ITrendingMovieAnalyzer trendAnalyzer)
         {
             _recentlyPlayedMovies = new Queue<string>(NumberOfRecentMoviesToAnalyze);
 
             // Tightly Coupled - creates new concrete dependency of SimpleTrendingMovieAnalyzer
             //_trendAnalyzer = new SimpleTrendingMovieAnalyzer();
+
+            // Loosely Coupled
+            _trendAnalyzer = trendAnalyzer;
 
             Receive<IncrementPlayCountMessage>(message => HandleIncrementMessage(message));
         }
@@ -28,6 +31,13 @@ namespace MovieStreaming.Actors
         private void HandleIncrementMessage(IncrementPlayCountMessage message)
         {
             var recentlyPlayedMoviesBufferIsFull = _recentlyPlayedMovies.Count == NumberOfRecentMoviesToAnalyze;
+
+            if (recentlyPlayedMoviesBufferIsFull)
+            {
+                _recentlyPlayedMovies.Dequeue();
+            }
+
+            _recentlyPlayedMovies.Enqueue(message.MovieTitle);
         }
 
         protected override void PreStart()

@@ -11,6 +11,7 @@
 
   <ItemGroup>
     <PackageReference Include="akka" Version="1.4.6" />
+    <PackageReference Include="akka.di.autofac" Version="1.4.1" />
     <PackageReference Include="akka.logger.serilog" Version="1.4.3" />
     <PackageReference Include="serilog.sinks.seq" Version="4.0.0" />
   </ItemGroup>

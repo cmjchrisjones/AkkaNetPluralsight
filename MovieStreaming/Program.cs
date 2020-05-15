@@ -1,5 +1,8 @@
 ﻿using Akka.Actor;
 using Akka.Configuration;
+using Akka.DI.AutoFac;
+using Akka.DI.Core;
+using Autofac;
 using MovieStreaming.Actors;
 using MovieStreaming.Messages;
 using Serilog;
@@ -17,6 +20,12 @@ namespace MovieStreaming
 
         static void Main(string[] args)
         {
+            var builder = new ContainerBuilder();
+            builder.RegisterType<SimpleTrendingMovieAnalyzer>().As<ITrendingMovieAnalyzer>();
+            builder.RegisterType<TrendingMoviesActor>();
+
+            var container = builder.Build();
+
             var logger = new LoggerConfiguration().WriteTo.Seq("http://localhost:32769").MinimumLevel.Information().CreateLogger();
 
             Serilog.Log.Logger = logger;
@@ -25,8 +34,10 @@ namespace MovieStreaming
             var hocon = XElement.Parse(File.ReadAllText(Directory.GetCurrentDirectory() + "\\hocon.conf"));
             var config = ConfigurationFactory.ParseString(hocon.Descendants("hocon").Single().Value);
 
-
             MovieStreamingActorSystem = ActorSystem.Create("MovieStreamingActorSystem", config);
+
+            IDependencyResolver resolver = new AutoFacDependencyResolver(container, MovieStreamingActorSystem);
+            
             MovieStreamingActorSystem.ActorOf(Props.Create<PlaybackActor>(), "Playback");
 
             do
