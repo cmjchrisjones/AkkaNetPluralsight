@@ -9,7 +9,7 @@ using System.Windows.Input;
 
 namespace ReactiveStock.ViewModel
 {
-    class StockToggleButtonViewModel : ViewModelBase
+    public class StockToggleButtonViewModel : ViewModelBase
     {
         // Bound to the UI buttons content property
         private string _buttonText;
