@@ -46,7 +46,7 @@ namespace ReactiveStock.ViewModel
                 new StockToggleButtonActor(stocksCoordinatorActorRef, this, stockSymbol)));
 
             // When user clicks the button, this command executes and tells the StockToggleButtonActor to flip the toggle (causes it to be watched or unwatched)
-            ToggleCommand = new RelayCommand(() => StockToggleButtonActorRef.Tell(new FlipToggleMessage()));
+            ToggleCommand = new RelayCommand(() => StockToggleButtonActorRef.Tell(new FlipToggleMessage()), keepTargetAlive: true);
 
             // When we create an instance of StockToggleButtonViewModel, initial text should be set to off
             UpdateButtonTextToOff();

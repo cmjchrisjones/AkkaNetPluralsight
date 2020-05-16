@@ -54,7 +54,7 @@ namespace ReactiveStock.ActorModel.Actors.UI
                 // because the stock symbol is in the chart, lets create remove it
                 var seriesToRemove = _series[message.StockSymbol];
 
-                _chartModel.Series.Add(seriesToRemove);
+                _chartModel.Series.Remove(seriesToRemove);
                 _series.Remove(message.StockSymbol);
 
                 RefreshChart();
