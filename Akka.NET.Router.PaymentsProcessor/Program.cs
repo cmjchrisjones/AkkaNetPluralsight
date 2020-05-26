@@ -1,4 +1,5 @@
 ﻿using Akka.Actor;
+using Akka.Configuration;
 using Akka.DI.AutoFac;
 using Akka.DI.Core;
 using Akka.NET.Router.PaymentsProcessor.Actors;
@@ -7,6 +8,9 @@ using Akka.NET.Router.PaymentsProcessor.Message;
 using Autofac;
 using System;
 using System.Diagnostics;
+using System.IO;
+using System.Linq;
+using System.Xml.Linq;
 
 namespace Akka.NET.Router.PaymentsProcessor
 {
@@ -52,9 +56,16 @@ namespace Akka.NET.Router.PaymentsProcessor
             var container = builder.Build();
 
             // Create the actor and assign to our field
-            ActorSystem = ActorSystem.Create("PaymentProcessing");
+            ActorSystem = ActorSystem.Create("PaymentProcessing", GetConfigFromHoconFile());
 
             var resolver = new AutoFacDependencyResolver(container, ActorSystem);
+        }
+
+        private static Config GetConfigFromHoconFile()
+        {
+            var hoconConfigFile = XElement.Parse(File.ReadAllText(Directory.GetCurrentDirectory() + "\\akka-hocon.config"));
+            var config = ConfigurationFactory.ParseString(hoconConfigFile.Descendants("hocon").Single().Value);
+            return config;
         }
     }
 }

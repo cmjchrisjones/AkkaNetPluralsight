@@ -29,9 +29,15 @@ namespace Akka.NET.Router.PaymentsProcessor.Actors
             #endregion
 
             #region Pool Router
+            //PaymentWorker = Context.ActorOf(Context.DI().Props<PaymentWorkerActor>().WithRouter(
+            //        new RoundRobinPool(5)
+            //        ));
+            #endregion
+
+            #region Pool Router (From Config)
             PaymentWorker = Context.ActorOf(Context.DI().Props<PaymentWorkerActor>().WithRouter(
-                    new RoundRobinPool(5)
-                    ));
+                FromConfig.Instance), "PaymentWorkers");
+
             #endregion
 
             Receive<ProcessFileMessage>(m =>
