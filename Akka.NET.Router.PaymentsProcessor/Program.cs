@@ -1,5 +1,6 @@
 ﻿using Akka.Actor;
 using Akka.DI.AutoFac;
+using Akka.DI.Core;
 using Akka.NET.Router.PaymentsProcessor.Actors;
 using Akka.NET.Router.PaymentsProcessor.ExternalSystems;
 using Akka.NET.Router.PaymentsProcessor.Message;
@@ -22,6 +23,11 @@ namespace Akka.NET.Router.PaymentsProcessor
 
             // Top Level Actor
             IActorRef jobCoordinator = ActorSystem.ActorOf<JobCoordinatorActor>("JobCoordinator");
+
+            // Create 3 instances of payment worker actors - using DI
+            ActorSystem.ActorOf(ActorSystem.DI().Props<PaymentWorkerActor>(), "PaymentWorker1");
+            ActorSystem.ActorOf(ActorSystem.DI().Props<PaymentWorkerActor>(), "PaymentWorker2");
+            ActorSystem.ActorOf(ActorSystem.DI().Props<PaymentWorkerActor>(), "PaymentWorker3");
 
             var jobTime = Stopwatch.StartNew();
             jobCoordinator.Tell(new ProcessFileMessage("payments.csv"));

@@ -5,6 +5,7 @@ using System.Text;
 using Akka.Actor;
 using Akka.DI.Core;
 using Akka.NET.Router.PaymentsProcessor.Message;
+using Akka.Routing;
 
 namespace Akka.NET.Router.PaymentsProcessor.Actors
 {
@@ -15,7 +16,15 @@ namespace Akka.NET.Router.PaymentsProcessor.Actors
 
         public JobCoordinatorActor()
         {
-            PaymentWorker = Context.ActorOf(Context.DI().Props<PaymentWorkerActor>(), "PaymentsWorker");
+            // OLD WAY
+            //PaymentWorker = Context.ActorOf(Context.DI().Props<PaymentWorkerActor>(), "PaymentsWorker");
+
+            // NEW WAY - using group actors
+            PaymentWorker = Context.ActorOf(Props.Empty.WithRouter(new RoundRobinGroup(
+                "/user/PaymentWorker1",
+                "/user/PaymentWorker2",
+                "/user/PaymentWorker3"
+                )));
 
             Receive<ProcessFileMessage>(m =>
             {
