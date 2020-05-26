@@ -19,12 +19,20 @@ namespace Akka.NET.Router.PaymentsProcessor.Actors
             // OLD WAY
             //PaymentWorker = Context.ActorOf(Context.DI().Props<PaymentWorkerActor>(), "PaymentsWorker");
 
+            #region Group Router
             // NEW WAY - using group actors
-            PaymentWorker = Context.ActorOf(Props.Empty.WithRouter(new RoundRobinGroup(
-                "/user/PaymentWorker1",
-                "/user/PaymentWorker2",
-                "/user/PaymentWorker3"
-                )));
+            //PaymentWorker = Context.ActorOf(Props.Empty.WithRouter(new RoundRobinGroup(
+            //    "/user/PaymentWorker1",
+            //    "/user/PaymentWorker2",
+            //    "/user/PaymentWorker3"
+            //    )));
+            #endregion
+
+            #region Pool Router
+            PaymentWorker = Context.ActorOf(Context.DI().Props<PaymentWorkerActor>().WithRouter(
+                    new RoundRobinPool(5)
+                    ));
+            #endregion
 
             Receive<ProcessFileMessage>(m =>
             {
@@ -50,7 +58,7 @@ namespace Akka.NET.Router.PaymentsProcessor.Actors
         {
             List<SendPaymentMessage> requests = ParseCsvFile(fileName);
             NumberOfRemainingPayments = requests.Count;
-            foreach(var spm in requests)
+            foreach (var spm in requests)
             {
                 PaymentWorker.Tell(spm);
             }
@@ -60,7 +68,7 @@ namespace Akka.NET.Router.PaymentsProcessor.Actors
         {
             var messagesToSend = new List<SendPaymentMessage>();
             var fileLines = File.ReadAllLines(fileName);
-            foreach(var line in fileLines)
+            foreach (var line in fileLines)
             {
                 var values = line.Split(',');
 
@@ -73,7 +81,7 @@ namespace Akka.NET.Router.PaymentsProcessor.Actors
                 messagesToSend.Add(message);
             }
 
-            return messagesToSend; 
+            return messagesToSend;
         }
     }
 }

@@ -24,10 +24,13 @@ namespace Akka.NET.Router.PaymentsProcessor
             // Top Level Actor
             IActorRef jobCoordinator = ActorSystem.ActorOf<JobCoordinatorActor>("JobCoordinator");
 
+            #region Group Router
             // Create 3 instances of payment worker actors - using DI
-            ActorSystem.ActorOf(ActorSystem.DI().Props<PaymentWorkerActor>(), "PaymentWorker1");
-            ActorSystem.ActorOf(ActorSystem.DI().Props<PaymentWorkerActor>(), "PaymentWorker2");
-            ActorSystem.ActorOf(ActorSystem.DI().Props<PaymentWorkerActor>(), "PaymentWorker3");
+            //ActorSystem.ActorOf(ActorSystem.DI().Props<PaymentWorkerActor>(), "PaymentWorker1");
+            //ActorSystem.ActorOf(ActorSystem.DI().Props<PaymentWorkerActor>(), "PaymentWorker2");
+            //ActorSystem.ActorOf(ActorSystem.DI().Props<PaymentWorkerActor>(), "PaymentWorker3");
+            #endregion
+
 
             var jobTime = Stopwatch.StartNew();
             jobCoordinator.Tell(new ProcessFileMessage("payments.csv"));
