@@ -8,9 +8,12 @@ namespace Akka.NET.Router.PaymentsProcessor.Message
     {
         public int AccountNumner { get; private set; }
 
-        public PaymentSentMessage(int accountNumner)
+        public string PaymentReceiptConfirmation { get; private set; }
+
+        public PaymentSentMessage(int accountNumner, string paymentReceiptConfirmation)
         {
             AccountNumner = accountNumner;
+            PaymentReceiptConfirmation = paymentReceiptConfirmation;
         }
     }
 }

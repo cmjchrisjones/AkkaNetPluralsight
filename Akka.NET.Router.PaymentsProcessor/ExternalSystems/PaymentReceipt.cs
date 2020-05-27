@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace Akka.NET.Router.PaymentsProcessor.ExternalSystems
 {
-    interface IPaymentGateway
+    class PaymentReceipt
     {
-        Task<PaymentReceipt> Pay(int accountNumber, decimal amount);
+        public int AccountNumber { get; set; }
+
+        public string PaymentConfirmationReceipt { get; set; }
     }
 }

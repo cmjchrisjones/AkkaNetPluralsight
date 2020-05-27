@@ -25,6 +25,7 @@ namespace Akka.NET.Router.PaymentsProcessor.Actors
 
             Receive<PaymentSentMessage>(m =>
             {
+                Console.WriteLine($"Receipt {m.PaymentReceiptConfirmation} for account {m.AccountNumner}");
                 NumberOfRemainingPayments--;
 
                 Console.WriteLine($"Requests remaining: {NumberOfRemainingPayments}");

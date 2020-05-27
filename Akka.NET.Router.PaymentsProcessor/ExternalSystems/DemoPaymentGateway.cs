@@ -3,22 +3,24 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace Akka.NET.Router.PaymentsProcessor.ExternalSystems
 {
     class DemoPaymentGateway : IPaymentGateway
     {
-        public void Pay(int accountNumber, decimal amount)
+        public async Task<PaymentReceipt> Pay(int accountNumber, decimal amount)
         {
-            if (PeakTimeDemoSimulator.IsPeakHours && amount > 100)
-            {
-                Console.WriteLine($"Account number {accountNumber} payment takes longer because its peak hour and the amount ({amount}) is over the 100 threshold");
-                Thread.Sleep(2000);
-            }
-            else
-            {
-                Thread.Sleep(200);
-            }
+            return await Task.Delay(2000)
+                 .ContinueWith<PaymentReceipt>(
+                task =>
+                {
+                    return new PaymentReceipt()
+                    {
+                        AccountNumber = accountNumber,
+                        PaymentConfirmationReceipt = Guid.NewGuid().ToString()
+                    };
+                });
         }
     }
 }
