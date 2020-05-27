@@ -1,4 +1,6 @@
-﻿using Akka.TestKit.Xunit2;
+﻿using Akka.Actor;
+using Akka.TestKit;
+using Akka.TestKit.Xunit2;
 using FluentAssertions;
 using System;
 using System.Collections.Generic;
@@ -38,6 +40,21 @@ namespace ActorModel.Tests
             actor.PlayCounts["Codenan the Barbarian"].Should().Be(42);
         }
 
+        [Fact] // Unit test using the ActorOfTestActorRef
+        public void ShouldReceiveInitialStatisticsMessage()
+        {
+            // Arrange
+            TestActorRef<StatisticsActor> actor = ActorOfAsTestActorRef<StatisticsActor>();
+
+            // Act
+            var initalMovieStats = new Dictionary<string, int>();
+            initalMovieStats.Add("Codenan the Barbarian", 42);
+
+            actor.Tell(new InitialStatisticsMessage(new ReadOnlyDictionary<string, int>(initalMovieStats)));
+
+            // Assert
+            actor.UnderlyingActor.PlayCounts["Codenan the Barbarian"].Should().Be(42);
+        }
 
     }
 }
