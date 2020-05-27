@@ -8,12 +8,16 @@ namespace ActorModel
     {
         public string CurrentlyPlaying { get; set; }
 
-        public UserActor()
+        private readonly IActorRef _stats;
+
+        public UserActor(IActorRef stats)
         {
+            _stats = stats;
+
             Receive<PlayMovieMessage>(m => {
                 CurrentlyPlaying = m.MovieTitle;
-                Thread.Sleep(4000);
                 Sender.Tell(new NowPlayingMessage(CurrentlyPlaying));
+                _stats.Tell(m.MovieTitle);
             });
         }
     }

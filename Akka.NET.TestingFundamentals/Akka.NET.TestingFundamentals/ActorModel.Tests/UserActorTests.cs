@@ -1,5 +1,6 @@
 ﻿using Akka.Actor;
 using Akka.TestKit;
+using Akka.TestKit.TestActors;
 using Akka.TestKit.Xunit2;
 using FluentAssertions;
 using System;
@@ -15,7 +16,8 @@ namespace ActorModel.Tests
         public void ShouldHaveInitialState()
         {
             // Arrange
-            TestActorRef<UserActor> userActor = ActorOfAsTestActorRef<UserActor>();
+            TestActorRef<UserActor> userActor = ActorOfAsTestActorRef<UserActor>(
+                Props.Create(()=> new UserActor(ActorOf(BlackHoleActor.Props))));
 
             // Act
 
@@ -27,7 +29,8 @@ namespace ActorModel.Tests
         public void ShouldUpdateCurrentlyPlayingState()
         {
             // Arrange
-            var userActor = ActorOfAsTestActorRef<UserActor>();
+            var userActor = ActorOfAsTestActorRef<UserActor>(
+                Props.Create(() => new UserActor(ActorOf(BlackHoleActor.Props))));
 
             // Act
             userActor.Tell(new PlayMovieMessage("Codenan the Barbarian"));
@@ -40,7 +43,8 @@ namespace ActorModel.Tests
         public void ShouldPlayMovie()
         {
             // Arrange
-            var actor = ActorOf<UserActor>();
+            var actor = ActorOfAsTestActorRef<UserActor>(
+                Props.Create(()=> new UserActor(ActorOf(BlackHoleActor.Props))));
 
             // Act
             actor.Tell(new PlayMovieMessage("Codenan the Barbarian"));

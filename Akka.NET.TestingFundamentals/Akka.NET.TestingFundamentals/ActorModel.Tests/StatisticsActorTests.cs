@@ -56,5 +56,24 @@ namespace ActorModel.Tests
             actor.UnderlyingActor.PlayCounts["Codenan the Barbarian"].Should().Be(42);
         }
 
+        // INTEGRATION TESTS
+
+        [Fact]
+        public void ShouldUpdatePlayCounts()
+        {
+            // Arrange
+            var statisticsActor = ActorOfAsTestActorRef<StatisticsActor>();
+
+            // Act
+            var initialMovieStats = new Dictionary<string, int>();
+            initialMovieStats.Add("Codenan the Barbarian", 42);
+            statisticsActor.Tell(new InitialStatisticsMessage(new ReadOnlyDictionary<string, int>(initialMovieStats)));
+
+            statisticsActor.Tell("Codenan the Barbarian");
+
+            // Assert
+            statisticsActor.UnderlyingActor.PlayCounts["Codenan the Barbarian"].Should().Be(43);
+        }
+
     }
 }
