@@ -17,14 +17,19 @@ namespace Akka.NET.Router.PaymentsProcessor.Actors
         {
             _paymentGateway = paymentGateway;
             Receive<SendPaymentMessage>(m => SendPayment(m));
+            Receive<PaymentReceipt>(m => PaymentReceipt(m));
 
         }
 
-        private async void SendPayment(SendPaymentMessage message)
+        private void SendPayment(SendPaymentMessage message)
         {
-            var sender = Sender;
-            var result = await _paymentGateway.Pay(message.AccountNumber, message.Amount);
-            sender.Tell(new PaymentSentMessage(result.AccountNumber, result.PaymentConfirmationReceipt));
+            _paymentGateway.Pay(message.AccountNumber, message.Amount).PipeTo(Self, Sender);
+        }
+
+        private void PaymentReceipt(PaymentReceipt paymentReceipt)
+        {
+            Sender.Tell(new PaymentSentMessage(paymentReceipt.AccountNumber, paymentReceipt.PaymentConfirmationReceipt));
+
         }
     }
 }
