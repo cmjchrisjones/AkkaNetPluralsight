@@ -27,6 +27,7 @@ namespace Akka.NET.Router.PaymentsProcessor
 
             // Top Level Actor
             IActorRef jobCoordinator = ActorSystem.ActorOf<JobCoordinatorActor>("JobCoordinator");
+            PeakTimeDemoSimulator.StartDemo(stayPeakTimeForSeconds: 6);
 
             #region Group Router
             // Create 3 instances of payment worker actors - using DI

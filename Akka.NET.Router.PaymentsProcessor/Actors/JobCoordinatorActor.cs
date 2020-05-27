@@ -16,29 +16,7 @@ namespace Akka.NET.Router.PaymentsProcessor.Actors
 
         public JobCoordinatorActor()
         {
-            // OLD WAY
-            //PaymentWorker = Context.ActorOf(Context.DI().Props<PaymentWorkerActor>(), "PaymentsWorker");
-
-            #region Group Router
-            // NEW WAY - using group actors
-            //PaymentWorker = Context.ActorOf(Props.Empty.WithRouter(new RoundRobinGroup(
-            //    "/user/PaymentWorker1",
-            //    "/user/PaymentWorker2",
-            //    "/user/PaymentWorker3"
-            //    )));
-            #endregion
-
-            #region Pool Router
-            //PaymentWorker = Context.ActorOf(Context.DI().Props<PaymentWorkerActor>().WithRouter(
-            //        new RoundRobinPool(5)
-            //        ));
-            #endregion
-
-            #region Pool Router (From Config)
-            PaymentWorker = Context.ActorOf(Context.DI().Props<PaymentWorkerActor>().WithRouter(
-                FromConfig.Instance), "PaymentWorkers");
-
-            #endregion
+            PaymentWorker = Context.ActorOf(Context.DI().Props<PaymentWorkerActor>(), "PaymentsWorker");
 
             Receive<ProcessFileMessage>(m =>
             {
