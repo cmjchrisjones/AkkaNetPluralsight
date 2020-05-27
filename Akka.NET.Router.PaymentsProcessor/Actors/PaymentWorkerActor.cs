@@ -20,10 +20,11 @@ namespace Akka.NET.Router.PaymentsProcessor.Actors
 
         }
 
-        private void SendPayment(SendPaymentMessage message)
+        private async void SendPayment(SendPaymentMessage message)
         {
-            var result = _paymentGateway.Pay(message.AccountNumber, message.Amount).Result;
-            Sender.Tell(new PaymentSentMessage(result.AccountNumber, result.PaymentConfirmationReceipt));
+            var sender = Sender;
+            var result = await _paymentGateway.Pay(message.AccountNumber, message.Amount);
+            sender.Tell(new PaymentSentMessage(result.AccountNumber, result.PaymentConfirmationReceipt));
         }
     }
 }
