@@ -1,7 +1,9 @@
 ﻿using Akka.Actor;
 using Akka.TestKit;
+using Akka.TestKit.TestActors;
 using Akka.TestKit.Xunit2;
 using FluentAssertions;
+using Moq;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -16,7 +18,7 @@ namespace ActorModel.Tests
         public void ShouldHaveInitialPlayCountsValue()
         {
             // Arrange
-            StatisticsActor actor = new StatisticsActor();
+            StatisticsActor actor = new StatisticsActor(null);
 
             // Act
 
@@ -28,7 +30,7 @@ namespace ActorModel.Tests
         public void ShouldSetInitialPlayCounts()
         {
             // Arrange
-            StatisticsActor actor = new StatisticsActor();
+            StatisticsActor actor = new StatisticsActor(null);
 
             // Act
             var initalMovieStats = new Dictionary<string, int>();
@@ -44,7 +46,7 @@ namespace ActorModel.Tests
         public void ShouldReceiveInitialStatisticsMessage()
         {
             // Arrange
-            TestActorRef<StatisticsActor> actor = ActorOfAsTestActorRef<StatisticsActor>();
+            TestActorRef<StatisticsActor> actor = ActorOfAsTestActorRef(() => new StatisticsActor(ActorOf(BlackHoleActor.Props)));
 
             // Act
             var initalMovieStats = new Dictionary<string, int>();
@@ -62,7 +64,7 @@ namespace ActorModel.Tests
         public void ShouldUpdatePlayCounts()
         {
             // Arrange
-            var statisticsActor = ActorOfAsTestActorRef<StatisticsActor>();
+            var statisticsActor = ActorOfAsTestActorRef(() => new StatisticsActor(ActorOf(BlackHoleActor.Props)));
 
             // Act
             var initialMovieStats = new Dictionary<string, int>();
@@ -75,5 +77,60 @@ namespace ActorModel.Tests
             statisticsActor.UnderlyingActor.PlayCounts["Codenan the Barbarian"].Should().Be(43);
         }
 
+        [Fact]
+        public void ShouldGetInitialStatsFromDatabase()
+        {
+            // Arrange
+            var mockDatabaseActor = ActorOfAsTestActorRef<MockDatabaseActor>();
+
+            var actor = ActorOfAsTestActorRef(() => new StatisticsActor(mockDatabaseActor));
+
+            // Act
+
+            // Assert
+            actor.UnderlyingActor.PlayCounts["Codenan the Barbarian"].Should().Be(42);
+        }
+
+        [Fact]
+        public void ShouldGetInitialStatsFromDatabaseUsingTestProbesInsteadOfHandWrittenMockActors()
+        {
+            // Arrange
+            var mockDatabaseActor = CreateTestProbe();
+            var messageHandler = new DelegateAutoPilot((sender, message) =>
+            {
+                if (message is GetInitialStatisticsMessage)
+                {
+                    var stats = new Dictionary<string, int>
+                {
+                    {"Codenan the Barbarian", 42 }
+                };
+
+                    sender.Tell(new InitialStatisticsMessage(new ReadOnlyDictionary<string, int>(stats)));
+                }
+                return AutoPilot.KeepRunning;
+            });
+
+            mockDatabaseActor.SetAutoPilot(messageHandler);
+
+            var actor = ActorOfAsTestActorRef(() => new StatisticsActor(mockDatabaseActor));
+
+            // Act
+
+            // Assert
+            actor.UnderlyingActor.PlayCounts["Codenan the Barbarian"].Should().Be(42);
+        }
+
+        [Fact]
+        public void ShouldAskDatabaseForInitialStats()
+        {
+            // Arrange
+            var mockDb = CreateTestProbe();
+            var actor = ActorOf(() => new StatisticsActor(mockDb));
+
+            // Act
+
+            // Assert
+            mockDb.ExpectMsg<GetInitialStatisticsMessage>();
+        }
     }
 }

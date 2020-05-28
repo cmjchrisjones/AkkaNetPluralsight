@@ -1,4 +1,5 @@
 ﻿using Akka.Actor;
+using Akka.TestKit.TestActors;
 using Akka.TestKit.Xunit2;
 using FluentAssertions;
 using System;
@@ -15,7 +16,7 @@ namespace ActorModel.Tests
         public void UserShouldUpdatePlayCounts()
         {
             // Arrange
-            var stats = ActorOfAsTestActorRef<StatisticsActor>();
+            var stats = ActorOfAsTestActorRef(() => new StatisticsActor(ActorOf(BlackHoleActor.Props)));
 
             // Act
             var initialMovieStats = new Dictionary<string, int>();

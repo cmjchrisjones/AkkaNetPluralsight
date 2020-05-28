@@ -9,8 +9,12 @@ namespace ActorModel
     {
         public Dictionary<string, int> PlayCounts { get; set; }
 
-        public StatisticsActor()
+        public IActorRef _databaseActor;
+
+        public StatisticsActor(IActorRef databaseActor)
         {
+            _databaseActor = databaseActor;
+
             Receive<InitialStatisticsMessage>(m => HandleInitialMessage(m));
             Receive<string>(title => HandleTitleMessage(title));
         }
@@ -30,6 +34,11 @@ namespace ActorModel
             {
                 PlayCounts.Add(title, 1);
             }
+        }
+
+        protected override void PreStart()
+        {
+            _databaseActor.Tell(new GetInitialStatisticsMessage());
         }
     }
 }
